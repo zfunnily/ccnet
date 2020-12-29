@@ -24,10 +24,11 @@ make -j4
 g++ -o ../bin/client client.cc -std=c++11
 ```
 
-运行
+运行服务端
 ```
 ../bin/server
 ```
+运行客户端
 ```
-../bin/client
+../bin/client 1
 ```
