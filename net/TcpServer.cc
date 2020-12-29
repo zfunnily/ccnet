@@ -62,10 +62,11 @@ struct sockaddr_in TcpServer::getSockAddr(int sockfd)
 void TcpServer::newConnection(int sockfd, const TcpAddr& peerAddr)
 {
     TcpAddr localaddr(getSockAddr(sockfd));
+    EventLoop *io_loop = thread_pool_->getNextLoop();
     char buf[64];
     sprintf(buf,":%d",nextConnId_++);
     std::string connName = name_ + buf;
-    TcpConnectionPtr conn(new TcpConnection(loop_,
+    TcpConnectionPtr conn(new TcpConnection(io_loop,
                                           connName,
                                           sockfd,
                                           localaddr,
@@ -76,7 +77,7 @@ void TcpServer::newConnection(int sockfd, const TcpAddr& peerAddr)
     conn->setWriteCompleteCallback(writecomplete_callback_);
     conn->setCloseCallback(
         std::bind(&TcpServer::removeConnection, this, std::placeholders::_1)); // FIXME: unsafe
-    loop_->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
+    io_loop->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
 }
 
 void TcpServer::removeConnection(const TcpConnectionPtr& conn)
