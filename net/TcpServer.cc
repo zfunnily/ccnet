@@ -1,6 +1,7 @@
 #include "TcpServer.h"
 #include "EventLoop.h"
 #include "Acceptor.h"
+#include "EventLoopThreadPool.h"
 
 void defaultConnectionCallback(const TcpConnectionPtr& conn)
 {
@@ -20,7 +21,8 @@ loop_(loop),
 nextConnId_(0),
 name_(name),
 connect_callback_(defaultConnectionCallback),
-message_callback_(defaultMessageCallback)
+message_callback_(defaultMessageCallback),
+thread_pool_(new EventLoopThreadPool(loop, name))
 {
     acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
 }
@@ -29,12 +31,21 @@ TcpServer::~TcpServer()
 {
 }
 
+ void TcpServer::setNumThreads(int num_threads)
+ {
+     thread_pool_->setThreadNum(num_threads);
+ }
+
 void TcpServer::start()
 {
-     loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
+    thread_pool_->start();
+    loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
 }
 
-
+std::shared_ptr<EventLoopThreadPool> TcpServer::threadPool()
+{
+    return thread_pool_;
+}
 struct sockaddr_in TcpServer::getSockAddr(int sockfd)
 {
     struct sockaddr_in localaddr;
@@ -46,6 +57,7 @@ struct sockaddr_in TcpServer::getSockAddr(int sockfd)
     }
     return localaddr;
 }
+
 
 void TcpServer::newConnection(int sockfd, const TcpAddr& peerAddr)
 {

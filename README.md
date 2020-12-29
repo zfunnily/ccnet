@@ -12,7 +12,7 @@ git clone https://github.com/diycat1024/ccnet
 ```
 创建build目录
 ```
-cd ccnet && mkdir build && cd ccnet/build
+mkdir -p ccnet/build && cd ccnet/build
 ```
 编译
 ```
@@ -24,4 +24,10 @@ make -j4
 g++ -o ../bin/client client.cc -std=c++11
 ```
 
-
+运行
+```
+../bin/server
+```
+```
+../bin/client
+```

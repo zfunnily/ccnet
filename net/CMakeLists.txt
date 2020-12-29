@@ -30,13 +30,21 @@ set(PROJECT_SOURCES
     Socket.cc
     TcpAddr.cc
     TcpConnection.cc
-    TcpServer.cc)
+    TcpServer.cc
+    EventLoopThread.cc
+    EventLoopThreadPool.cc)
+
+set(PROJECT_LIBRARIES 
+    pthread
+    )
 
 add_library(${PROJECT_OUT} SHARED ${PROJECT_SOURCES})
+target_link_libraries(${PROJECT_OUT} ${PROJECT_LIBRARIES})
 # add_library(${PROJECT_OUT}"_static" STATIC ${PROJECT_SOURCES})
-# 指定静态库的输出名称
+# target_link_libraries(${PROJECT_OUT}"_static" ${PROJECT_LIBRARIES})
+# #指定静态库的输出名称
 # set_target_properties(${PROJECT_OUT}"_static" PROPERTIES OUTPUT_NAME ${PROJECT_OUT})
-# 使动态库和静态库同时存在
+# #使动态库和静态库同时存在
 # set_target_properties(${PROJECT_OUT} PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 # set_target_properties(${PROJECT_OUT}"_static" PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 

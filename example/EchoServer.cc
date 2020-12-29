@@ -5,6 +5,7 @@ EchoServer::EchoServer(EventLoop *loop, const TcpAddr& addr)
 {
     server_.setConnectionCallback(std::bind(&EchoServer::onConnect, this, std::placeholders::_1));
     server_.setMessageCallback(std::bind(&EchoServer::onMessage,this, std::placeholders::_1, std::placeholders::_2));
+    server_.setNumThreads(4);
 }
 
 EchoServer::~EchoServer()
