@@ -19,9 +19,9 @@ public:
     void setThreadInitCallback(const ThreadInitCallback& cb) { threadinit_callback = std::move(cb);}
     void start();
     
-    void setConnectionCallback(const ConnectionCallback& cb) { connect_callback_ = cb; }
-    void setMessageCallback(const MessageCallback& cb)  { message_callback_ = cb; }
-    void setWriteCompleteCallback(const WriteCompleteCallback& cb) { writecomplete_callback_ = cb; }
+    void setConnectionCallback(const ConnectionCallback& cb) { connect_callback_ = std::move(cb); }
+    void setMessageCallback(const MessageCallback& cb)  { message_callback_ = std::move(cb); }
+    void setWriteCompleteCallback(const WriteCompleteCallback& cb) { writecomplete_callback_ = std::move(cb); }
 
     std::shared_ptr<EventLoopThreadPool> threadPool();
 private:
